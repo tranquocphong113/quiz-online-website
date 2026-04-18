@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WedQuizz - Phòng chờ quiz trực tuyến">
+    <title>WedQuizz - Phòng chờ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Waitingroom.css">
+</head>
+<body>
+    
+    <div class="bg-particles" id="bgParticles"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    
+    <nav class="top-bar">
+        <div class="top-bar-container">
+            <a href="../Homepage/Homepage.html" class="back-btn" id="backBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"/>
+                    <polyline points="12 19 5 12 12 5"/>
+                </svg>
+                <span>Trang chủ</span>
+            </a>
+            <div class="top-bar-logo">
+                <div class="top-bar-logo-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 4L42 14V34L24 44L6 34V14L24 4Z" fill="url(#tbLogoGrad)" opacity="0.2"/>
+                        <path d="M24 4L42 14V34L24 44L6 34V14L24 4Z" stroke="url(#tbLogoGrad)" stroke-width="2"/>
+                        <text x="24" y="30" text-anchor="middle" fill="white" font-size="18" font-weight="700" font-family="Inter">Q</text>
+                        <defs>
+                            <linearGradient id="tbLogoGrad" x1="6" y1="4" x2="42" y2="44">
+                                <stop stop-color="#818cf8"/>
+                                <stop offset="1" stop-color="#c084fc"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="top-bar-brand">Wed<span>Quizz</span></span>
+            </div>
+            <div class="top-bar-user">
+                <div class="user-avatar-sm" id="userAvatarSm">
+                    <span id="avatarInitialSm">U</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    
+    <main class="waiting-main">
+        
+        <div class="room-header">
+            <div class="room-status-badge">
+                <span class="status-pulse"></span>
+                <span>Đang chờ người chơi</span>
+            </div>
+            <h1 class="room-title">Phòng chờ Quiz</h1>
+            <p class="room-subtitle">Chia sẻ mã phòng để bạn bè tham gia</p>
+        </div>
+
+        
+        <div class="room-code-card">
+            <div class="code-label">Mã phòng</div>
+            <div class="code-display">
+                <span class="code-text" id="roomCodeDisplay">------</span>
+                <button class="code-copy-btn" id="copyCodeBtn">
+                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="code-share">
+                <span class="share-text">Chia sẻ mã này cho bạn bè để tham gia</span>
+            </div>
+        </div>
+
+        
+        <div class="waiting-grid">
+            
+            <div class="players-card">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        Người chơi
+                    </h2>
+                    <span class="player-count" id="playerCount">0/10</span>
+                </div>
+                <div class="players-list" id="playersList">
+                    
+                </div>
+                <div class="players-empty" id="playersEmpty">
+                    <div class="empty-icon">👥</div>
+                    <p>Chưa có ai tham gia...</p>
+                    <span>Chia sẻ mã phòng để mời bạn bè</span>
+                </div>
+            </div>
+
+            
+            <div class="settings-card">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        Cài đặt phòng
+                    </h2>
+                </div>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Số câu hỏi</span>
+                            <span class="setting-desc">Tổng số câu hỏi trong quiz</span>
+                        </div>
+                        <div class="setting-control">
+                            <button class="setting-btn">−</button>
+                            <span class="setting-value" id="settingQuestions">10</span>
+                            <button class="setting-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Thời gian / câu</span>
+                            <span class="setting-desc">Giây cho mỗi câu hỏi</span>
+                        </div>
+                        <div class="setting-control">
+                            <button class="setting-btn">−</button>
+                            <span class="setting-value" id="settingTime">30</span>
+                            <button class="setting-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Chủ đề</span>
+                            <span class="setting-desc">Lĩnh vực của câu hỏi</span>
+                        </div>
+                        <div class="setting-select-wrapper">
+                            <select class="setting-select" id="settingTopic">
+                                <option value="mixed">🎲 Tổng hợp</option>
+                                <option value="math">📐 Toán học</option>
+                                <option value="science">🔬 Khoa học</option>
+                                <option value="history">📜 Lịch sử</option>
+                                <option value="geography">🌍 Địa lý</option>
+                                <option value="literature">📚 Văn học</option>
+                                <option value="tech">💻 Công nghệ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Chế độ</span>
+                            <span class="setting-desc">Kiểu chơi của quiz</span>
+                        </div>
+                        <div class="setting-select-wrapper">
+                            <select class="setting-select" id="settingMode">
+                                <option value="classic">🎮 Cổ điển</option>
+                                <option value="speed">⚡ Tốc độ</option>
+                                <option value="team">👥 Đội nhóm</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="waiting-actions">
+            <button class="btn-leave" id="btnLeave">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Rời phòng
+            </button>
+            <button class="btn-start" id="btnStart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span class="btn-text">Bắt đầu Quiz</span>
+                <span class="btn-loader" style="display:none"></span>
+            </button>
+        </div>
+
+        
+        <div class="chat-card">
+            <div class="card-header">
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Trò chuyện
+                </h2>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-system-msg">
+                    <span>🎉 Phòng đã được tạo! Chào mừng mọi người.</span>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Nhập tin nhắn...">
+                <button class="chat-send-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    
+    <div class="toast-container" id="toastContainer"></div>
+
+    
+</body>
+</html>
