@@ -38,15 +38,6 @@ inputs.forEach((input, i) => {
     inputs[next].focus();
   });
 });
-
-// Avatar selection
-document.querySelectorAll('.avatar').forEach(avatar => {
-  avatar.addEventListener('click', () => {
-    document.querySelectorAll('.avatar').forEach(a => a.classList.remove('selected'));
-    avatar.classList.add('selected');
-  });
-});
-
 // Show error message
 function showError(msg) {
   const el = document.getElementById('errorMsg');
