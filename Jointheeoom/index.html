@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WedQuizz – Tham gia phòng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card">
+
+    <!-- Logo -->
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 2L13 7H17L14 11L15.5 16L10 13L4.5 16L6 11L3 7H7L10 2Z" fill="#a78bfa"/>
+        </svg>
+      </div>
+      <span class="logo-name">WedQuizz</span>
+    </div>
+
+    <!-- Heading -->
+    <div class="heading">
+      <h1>Tham gia phòng 🎮</h1>
+      <p>Nhập mã phòng để bắt đầu</p>
+    </div>
+
+    <!-- Mã phòng -->
+    <div class="input-group">
+      <label>Mã phòng</label>
+      <div class="code-row" id="codeRow">
+        <input maxlength="1" id="c1" autocomplete="off" />
+        <input maxlength="1" id="c2" autocomplete="off" />
+        <input maxlength="1" id="c3" autocomplete="off" />
+        <input maxlength="1" id="c4" autocomplete="off" />
+        <input maxlength="1" id="c5" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- Tên hiển thị -->
+    <div class="input-group">
+      <label>Tên hiển thị</label>
+      <div class="input-wrap">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+        </svg>
+        <input type="text" id="nameInput" placeholder="Nhập tên của bạn..." maxlength="30" />
+      </div>
+    </div>
+
+    <!-- Avatar -->
+    <div class="input-group">
+      <label>Chọn avatar</label>
+      <div class="avatar-row">
+        <div class="avatar selected" data-emoji="🦊">🦊</div>
+        <div class="avatar" data-emoji="🐼">🐼</div>
+        <div class="avatar" data-emoji="🦁">🦁</div>
+        <div class="avatar" data-emoji="🐸">🐸</div>
+        <div class="avatar" data-emoji="🐯">🐯</div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="errorMsg"></div>
+
+    <!-- Button -->
+    <button class="btn-join" id="btnJoin">Tham gia ngay</button>
+
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
