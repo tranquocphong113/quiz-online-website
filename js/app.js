@@ -53,7 +53,7 @@ if (showLoginTab && showRegisterTab && loginForm && registerForm) {
 
 /* Đăng ký */
 if (registerForm) {
-  registerForm.addEventListener("submit", function (event) {
+  registerForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const name = document.getElementById("registerName").value.trim();
@@ -65,7 +65,7 @@ if (registerForm) {
       return;
     }
 
-    const result = api.register(name, email, password);
+    const result = await api.register(name, email, password);
 
     if (!result.success) {
       alert(result.message);
@@ -79,7 +79,7 @@ if (registerForm) {
 
 /* Đăng nhập */
 if (loginForm) {
-  loginForm.addEventListener("submit", function (event) {
+  loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.getElementById("loginEmail").value.trim();
@@ -90,7 +90,7 @@ if (loginForm) {
       return;
     }
 
-    const result = api.login(email, password);
+    const result = await api.login(email, password);
 
     if (!result.success) {
       alert(result.message);
@@ -184,7 +184,7 @@ function renderQuestionList() {
 const createRoomBtn = document.getElementById("createRoomBtn");
 
 if (createRoomBtn) {
-  createRoomBtn.addEventListener("click", function () {
+  createRoomBtn.addEventListener("click", async function () {
     const quizTitle = document.getElementById("quizTitle").value.trim();
     const timeLimit = Number(document.getElementById("quizTimeLimit").value);
 
@@ -211,10 +211,15 @@ if (createRoomBtn) {
     appState.currentQuiz.title = quizTitle;
     appState.currentQuiz.timeLimit = timeLimit;
 
-    const result = api.createRoom(
+    const result = await api.createRoom(
       appState.currentQuiz,
       appState.currentUser.name,
     );
+
+    if (!result.success) {
+      alert(result.message);
+      return;
+    }
 
     appState.currentRoom = result.room;
     appState.currentQuiz = result.room.quiz;
@@ -248,7 +253,7 @@ function renderWaitingRoom() {
 const joinRoomBtn = document.getElementById("joinRoomBtn");
 
 if (joinRoomBtn) {
-  joinRoomBtn.addEventListener("click", function () {
+  joinRoomBtn.addEventListener("click", async function () {
     const code = document
       .getElementById("joinRoomCode")
       .value.trim()
@@ -264,7 +269,7 @@ if (joinRoomBtn) {
       return;
     }
 
-    const result = api.joinRoom(code, appState.currentUser.name);
+    const result = await api.joinRoom(code, appState.currentUser.name);
 
     if (!result.success) {
       alert(result.message);
@@ -445,7 +450,7 @@ if (nextQuestionBtn) {
   });
 }
 
-function showResult(message = "") {
+async function showResult(message = "") {
   if (appState.game.isFinished) return;
 
   appState.game.isFinished = true;
@@ -475,7 +480,7 @@ function showResult(message = "") {
   }
 
   try {
-    api.saveScore({
+    await api.saveScore({
       name: appState.currentUser ? appState.currentUser.name : "Khách",
       email: appState.currentUser ? appState.currentUser.email : "guest",
       roomCode: appState.currentRoom ? appState.currentRoom.code : "",
@@ -499,13 +504,13 @@ function showResult(message = "") {
 const openHistoryBtn = document.getElementById("openHistoryBtn");
 
 if (openHistoryBtn) {
-  openHistoryBtn.addEventListener("click", function () {
-    renderHistory();
+  openHistoryBtn.addEventListener("click", async function () {
+    await renderHistory();
     showScreen("screen-history");
   });
 }
 
-function renderResultLeaderboard() {
+async function renderResultLeaderboard() {
   const leaderboardBody = document.getElementById("resultLeaderboardBody");
 
   if (!leaderboardBody) return;
@@ -522,7 +527,7 @@ function renderResultLeaderboard() {
   }
 
   const roomCode = appState.currentRoom.code;
-  const scores = api.getScoresByRoom(roomCode);
+  const scores = await api.getScoresByRoom(roomCode);
 
   scores.sort((a, b) => {
     if (b.percent !== a.percent) {
@@ -555,7 +560,7 @@ function renderResultLeaderboard() {
   });
 }
 
-function renderHistory() {
+async function renderHistory() {
   const historyBody = document.getElementById("historyBody");
 
   if (!historyBody) return;
@@ -572,7 +577,7 @@ function renderHistory() {
   }
 
   const email = appState.currentUser.email;
-  const history = api.getHistoryByUser(email);
+  const history = await api.getHistoryByUser(email);
 
   history.sort((a, b) => b.id - a.id);
 

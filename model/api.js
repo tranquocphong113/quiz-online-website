@@ -1,131 +1,60 @@
-const USER_KEY = "quiz_users";
-const ROOM_KEY = "quiz_room";
-const SCORE_KEY = "quiz_scores";
+const API_URL = "./api.php";
 
-function readStorage(key, defaultValue) {
-  const data = localStorage.getItem(key);
-  return data ? JSON.parse(data) : defaultValue;
-}
+async function request(action, data = {}) {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ action, ...data }),
+    });
 
-function writeStorage(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
+    if (!response.ok) {
+      return {
+        success: false,
+        message: `Lỗi máy chủ: ${response.status}`,
+      };
+    }
 
-function createRoomCode() {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
+    return await response.json();
+  } catch (error) {
+    console.error("API request error:", error);
+    return {
+      success: false,
+      message: error.message || "Lỗi kết nối máy chủ",
+    };
+  }
 }
 
 export const api = {
-  register(name, email, password) {
-    const users = readStorage(USER_KEY, []);
-
-    const existed = users.find((user) => user.email === email);
-
-    if (existed) {
-      return {
-        success: false,
-        message: "Email đã tồn tại",
-      };
-    }
-
-    users.push({
-      name,
-      email,
-      password,
-    });
-
-    writeStorage(USER_KEY, users);
-
-    return {
-      success: true,
-    };
+  async register(name, email, password) {
+    return request("register", { name, email, password });
   },
 
-  login(email, password) {
-    const users = readStorage(USER_KEY, []);
-
-    const user = users.find(
-      (user) => user.email === email && user.password === password,
-    );
-
-    if (!user) {
-      return {
-        success: false,
-        message: "Sai email hoặc mật khẩu",
-      };
-    }
-
-    return {
-      success: true,
-      user,
-    };
+  async login(email, password) {
+    return request("login", { email, password });
   },
 
-  createRoom(quiz, hostName) {
-    const room = {
-      code: createRoomCode(),
-      quiz: JSON.parse(JSON.stringify(quiz)),
-      players: [hostName],
-    };
-
-    writeStorage(ROOM_KEY, room);
-
-    return {
-      success: true,
-      room,
-    };
+  async createRoom(quiz, hostName) {
+    return request("createRoom", { quiz, hostName });
   },
 
-  joinRoom(code, playerName) {
-    const room = readStorage(ROOM_KEY, null);
-
-    if (!room || room.code !== code) {
-      return {
-        success: false,
-        message: "Không tìm thấy phòng",
-      };
-    }
-
-    if (!room.players.includes(playerName)) {
-      room.players.push(playerName);
-    }
-
-    writeStorage(ROOM_KEY, room);
-
-    return {
-      success: true,
-      room,
-    };
+  async joinRoom(code, playerName) {
+    return request("joinRoom", { code, playerName });
   },
 
-  saveScore(data) {
-    const scores = readStorage(SCORE_KEY, []);
-
-    const percent =
-      data.total > 0 ? Math.round((data.score / data.total) * 100) : 0;
-
-    scores.push({
-      id: Date.now(),
-      name: data.name,
-      email: data.email,
-      roomCode: data.roomCode,
-      quizTitle: data.quizTitle,
-      score: data.score,
-      total: data.total,
-      percent: percent,
-      time: new Date().toLocaleString("vi-VN"),
-    });
-
-    writeStorage(SCORE_KEY, scores);
+  async saveScore(data) {
+    return request("saveScore", data);
   },
 
-  getScoresByRoom(roomCode) {
-    const scores = readStorage(SCORE_KEY, []);
-    return scores.filter((item) => item.roomCode === roomCode);
+  async getScoresByRoom(roomCode) {
+    const result = await request("getScoresByRoom", { roomCode });
+    return result.success ? result.scores : [];
   },
 
-  getHistoryByUser(email) {
-    const scores = readStorage(SCORE_KEY, []);
-    return scores.filter((item) => item.email === email);
+  async getHistoryByUser(email) {
+    const result = await request("getHistoryByUser", { email });
+    return result.success ? result.history : [];
   },
 };
