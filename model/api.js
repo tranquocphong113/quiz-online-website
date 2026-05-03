@@ -15,117 +15,84 @@ function createRoomCode() {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
+async function postJSON(url, data) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return await response.json();
+}
+
 export const api = {
-  register(name, email, password) {
-    const users = readStorage(USER_KEY, []);
-
-    const existed = users.find((user) => user.email === email);
-
-    if (existed) {
-      return {
-        success: false,
-        message: "Email đã tồn tại",
-      };
-    }
-
-    users.push({
-      name,
-      email,
-      password,
+  async register(name, email, password) {
+    return await postJSON("api/auth.php", {
+      action: "register",
+      fullname: name,
+      email: email,
+      password: password,
     });
-
-    writeStorage(USER_KEY, users);
-
-    return {
-      success: true,
-    };
   },
 
-  login(email, password) {
-    const users = readStorage(USER_KEY, []);
-
-    const user = users.find(
-      (user) => user.email === email && user.password === password,
-    );
-
-    if (!user) {
-      return {
-        success: false,
-        message: "Sai email hoặc mật khẩu",
-      };
-    }
-
-    return {
-      success: true,
-      user,
-    };
+  async login(email, password) {
+    return await postJSON("api/auth.php", {
+      action: "login",
+      email: email,
+      password: password,
+    });
+  },
+  async createQuiz(quiz, userId) {
+    return await postJSON("api/quiz.php", {
+      action: "create",
+      user_id: userId,
+      title: quiz.title,
+      time_limit: quiz.timeLimit,
+      questions: quiz.questions,
+    });
   },
 
-  createRoom(quiz, hostName) {
-    const room = {
-      code: createRoomCode(),
-      quiz: JSON.parse(JSON.stringify(quiz)),
-      players: [hostName],
-    };
-
-    writeStorage(ROOM_KEY, room);
-
-    return {
-      success: true,
-      room,
-    };
+  async createRoom(quiz, hostName) {
+    return await postJSON("api/room.php", {
+      action: "create",
+      quiz_id: quiz.id,
+      host_name: hostName,
+    });
   },
 
-  joinRoom(code, playerName) {
-    const room = readStorage(ROOM_KEY, null);
-
-    if (!room || room.code !== code) {
-      return {
-        success: false,
-        message: "Không tìm thấy phòng",
-      };
-    }
-
-    if (!room.players.includes(playerName)) {
-      room.players.push(playerName);
-    }
-
-    writeStorage(ROOM_KEY, room);
-
-    return {
-      success: true,
-      room,
-    };
+  async joinRoom(code, playerName) {
+    return await postJSON("api/room.php", {
+      action: "join",
+      room_code: code,
+      player_name: playerName,
+    });
   },
 
-  saveScore(data) {
-    const scores = readStorage(SCORE_KEY, []);
-
-    const percent =
-      data.total > 0 ? Math.round((data.score / data.total) * 100) : 0;
-
-    scores.push({
-      id: Date.now(),
-      name: data.name,
-      email: data.email,
-      roomCode: data.roomCode,
-      quizTitle: data.quizTitle,
+  async saveScore(data) {
+    return await postJSON("api/score.php", {
+      action: "save",
+      room_id: data.roomId,
+      player_name: data.name,
+      player_email: data.email,
+      quiz_title: data.quizTitle,
       score: data.score,
       total: data.total,
-      percent: percent,
-      time: new Date().toLocaleString("vi-VN"),
     });
-
-    writeStorage(SCORE_KEY, scores);
   },
 
-  getScoresByRoom(roomCode) {
-    const scores = readStorage(SCORE_KEY, []);
-    return scores.filter((item) => item.roomCode === roomCode);
+  async getScoresByRoom(roomId) {
+    return await postJSON("api/score.php", {
+      action: "leaderboard",
+      room_id: roomId,
+    });
   },
 
-  getHistoryByUser(email) {
-    const scores = readStorage(SCORE_KEY, []);
-    return scores.filter((item) => item.email === email);
+  async getHistoryByUser(email) {
+    return await postJSON("api/score.php", {
+      action: "history",
+      email: email,
+    });
   },
 };

@@ -53,7 +53,7 @@ if (showLoginTab && showRegisterTab && loginForm && registerForm) {
 
 /* Đăng ký */
 if (registerForm) {
-  registerForm.addEventListener("submit", function (event) {
+  registerForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const name = document.getElementById("registerName").value.trim();
@@ -65,21 +65,28 @@ if (registerForm) {
       return;
     }
 
-    const result = api.register(name, email, password);
+    try {
+      const result = await api.register(name, email, password);
 
-    if (!result.success) {
-      alert(result.message);
-      return;
+      if (!result.success) {
+        alert(result.message);
+        return;
+      }
+
+      alert(result.message || "Đăng ký thành công");
+      showLoginTab.click();
+    } catch (error) {
+      console.log("Lỗi đăng ký:", error);
+      alert(
+        "Không thể đăng ký. Vui lòng kiểm tra file api/auth.php hoặc kết nối MySQL.",
+      );
     }
-
-    alert("Đăng ký thành công");
-    showLoginTab.click();
   });
 }
 
 /* Đăng nhập */
 if (loginForm) {
-  loginForm.addEventListener("submit", function (event) {
+  loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.getElementById("loginEmail").value.trim();
@@ -90,17 +97,24 @@ if (loginForm) {
       return;
     }
 
-    const result = api.login(email, password);
+    try {
+      const result = await api.login(email, password);
 
-    if (!result.success) {
-      alert(result.message);
-      return;
+      if (!result.success) {
+        alert(result.message);
+        return;
+      }
+
+      appState.currentUser = result.user;
+
+      updateUserName();
+      showScreen("screen-dashboard");
+    } catch (error) {
+      console.log("Lỗi đăng nhập:", error);
+      alert(
+        "Không thể đăng nhập. Vui lòng kiểm tra file api/auth.php hoặc kết nối MySQL.",
+      );
     }
-
-    appState.currentUser = result.user;
-
-    updateUserName();
-    showScreen("screen-dashboard");
   });
 }
 
@@ -184,7 +198,7 @@ function renderQuestionList() {
 const createRoomBtn = document.getElementById("createRoomBtn");
 
 if (createRoomBtn) {
-  createRoomBtn.addEventListener("click", function () {
+  createRoomBtn.addEventListener("click", async function () {
     const quizTitle = document.getElementById("quizTitle").value.trim();
     const timeLimit = Number(document.getElementById("quizTimeLimit").value);
 
@@ -211,16 +225,36 @@ if (createRoomBtn) {
     appState.currentQuiz.title = quizTitle;
     appState.currentQuiz.timeLimit = timeLimit;
 
-    const result = api.createRoom(
-      appState.currentQuiz,
-      appState.currentUser.name,
-    );
+    try {
+      const quizResult = await api.createQuiz(
+        appState.currentQuiz,
+        appState.currentUser.id,
+      );
 
-    appState.currentRoom = result.room;
-    appState.currentQuiz = result.room.quiz;
+      if (!quizResult.success) {
+        alert(quizResult.message);
+        return;
+      }
 
-    renderWaitingRoom();
-    showScreen("screen-waiting-room");
+      appState.currentQuiz.id = quizResult.quiz.id;
+
+      const roomResult = await api.createRoom(
+        appState.currentQuiz,
+        appState.currentUser.name,
+      );
+      if (!roomResult.success) {
+        alert(roomResult.message);
+        return;
+      }
+      appState.currentRoom = roomResult.room;
+      appState.currentQuiz = roomResult.room.quiz;
+
+      renderWaitingRoom();
+      showScreen("screen-waiting-room");
+    } catch (error) {
+      console.log("Lỗi tạo phòng:", error);
+      alert("Đã xảy ra lỗi khi tạo phòng");
+    }
   });
 }
 
@@ -248,7 +282,7 @@ function renderWaitingRoom() {
 const joinRoomBtn = document.getElementById("joinRoomBtn");
 
 if (joinRoomBtn) {
-  joinRoomBtn.addEventListener("click", function () {
+  joinRoomBtn.addEventListener("click", async function () {
     const code = document
       .getElementById("joinRoomCode")
       .value.trim()
@@ -264,7 +298,7 @@ if (joinRoomBtn) {
       return;
     }
 
-    const result = api.joinRoom(code, appState.currentUser.name);
+    const result = await api.joinRoom(code, appState.currentUser.name);
 
     if (!result.success) {
       alert(result.message);
@@ -445,7 +479,7 @@ if (nextQuestionBtn) {
   });
 }
 
-function showResult(message = "") {
+async function showResult(message = "") {
   if (appState.game.isFinished) return;
 
   appState.game.isFinished = true;
@@ -475,10 +509,10 @@ function showResult(message = "") {
   }
 
   try {
-    api.saveScore({
+    await api.saveScore({
+      roomId: appState.currentRoom ? appState.currentRoom.id : 0,
       name: appState.currentUser ? appState.currentUser.name : "Khách",
       email: appState.currentUser ? appState.currentUser.email : "guest",
-      roomCode: appState.currentRoom ? appState.currentRoom.code : "",
       quizTitle: appState.currentQuiz
         ? appState.currentQuiz.title
         : "Quiz chưa đặt tên",
@@ -490,6 +524,7 @@ function showResult(message = "") {
   }
 
   showScreen("screen-result");
+
   setTimeout(function () {
     renderResultLeaderboard();
   }, 100);
@@ -499,13 +534,13 @@ function showResult(message = "") {
 const openHistoryBtn = document.getElementById("openHistoryBtn");
 
 if (openHistoryBtn) {
-  openHistoryBtn.addEventListener("click", function () {
-    renderHistory();
+  openHistoryBtn.addEventListener("click", async function () {
+    await renderHistory();
     showScreen("screen-history");
   });
 }
 
-function renderResultLeaderboard() {
+async function renderResultLeaderboard() {
   const leaderboardBody = document.getElementById("resultLeaderboardBody");
 
   if (!leaderboardBody) return;
@@ -521,8 +556,15 @@ function renderResultLeaderboard() {
     return;
   }
 
-  const roomCode = appState.currentRoom.code;
-  const scores = api.getScoresByRoom(roomCode);
+  const roomId = appState.currentRoom.id;
+  const result = await api.getScoresByRoom(roomId);
+
+  if (!result.success) {
+    console.log("Lỗi lấy bảng xếp hạng:", result.message);
+    return;
+  }
+
+  const scores = result.scores;
 
   scores.sort((a, b) => {
     if (b.percent !== a.percent) {
@@ -555,7 +597,7 @@ function renderResultLeaderboard() {
   });
 }
 
-function renderHistory() {
+async function renderHistory() {
   const historyBody = document.getElementById("historyBody");
 
   if (!historyBody) return;
@@ -572,9 +614,14 @@ function renderHistory() {
   }
 
   const email = appState.currentUser.email;
-  const history = api.getHistoryByUser(email);
+  const result = await api.getHistoryByUser(email);
 
-  history.sort((a, b) => b.id - a.id);
+  if (!result.success) {
+    console.log("Lỗi lấy lịch sử:", result.message);
+    return;
+  }
+
+  const history = result.history;
 
   if (history.length === 0) {
     historyBody.innerHTML = `
