@@ -6,46 +6,61 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
 }
 
 .auth-box {
   width: 100%;
-  max-width: 420px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 28px;
+  max-width: 450px;
+  background: var(--card-bg);
+  border: none;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
 .auth-box h1 {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   text-align: center;
+  color: var(--primary);
+  font-size: 28px;
 }
 
 .auth-box p {
   text-align: center;
-  margin-bottom: 18px;
-  color: #555;
+  margin-bottom: 24px;
+  color: #6b7280;
 }
 
 .auth-tabs {
   display: flex;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
+  background: #f3f4f6;
+  padding: 4px;
+  border-radius: 12px;
 }
 
 .tab-btn {
   width: 50%;
-  padding: 10px;
-  background: white;
-  border: 1px solid #ccc;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.3s ease;
 }
 
 .tab-btn.active {
-  background: #222;
-  color: white;
+  background: var(--card-bg);
+  color: var(--primary);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .auth-form .btn {
   width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  font-size: 16px;
 }

@@ -55,7 +55,6 @@ export function renderWaitingRoom() {
   updateStartButtonByRole();
 }
 
-/* Polling danh sách người chơi + trạng thái phòng */
 let playerPollInterval = null;
 
 export function startPlayerPolling() {
@@ -101,7 +100,6 @@ export function stopPlayerPolling() {
   }
 }
 
-/* Polling trạng thái phòng */
 let roomStatusPollInterval = null;
 
 export function startRoomStatusPolling() {

@@ -14,7 +14,6 @@
 
 <div id="app">
 
-    <!-- 1. Đăng nhập / Đăng ký -->
     <section id="screen-auth" class="screen active">
         <div class="auth-box">
             <h1>Quiz Online</h1>
@@ -60,7 +59,6 @@
         </div>
     </section>
 
-    <!-- 2. Trang chủ -->
     <section id="screen-dashboard" class="screen">
         <div class="page">
             <div class="topbar">
@@ -91,10 +89,29 @@
                     <button class="btn btn-dark" id="openHistoryBtn">Xem lịch sử</button>
                 </div>
             </div>
+
+            <div style="margin-top: 50px;">
+                <h3 style="margin-bottom: 20px; font-size: 20px; color: var(--dark);">Khám phá</h3>
+                <div class="dashboard-grid" id="presetQuizList">
+                    </div>
+            </div>
+
+        </div>
+        
+        <div id="confirmModal" class="modal hidden">
+            <div class="modal-content card">
+                <h3 id="confirmQuizTitle" style="color: var(--primary); margin-bottom: 12px; font-size: 22px;">Tên bài Quiz</h3>
+                <p style="color: #4B5563; margin-bottom: 8px;">Số câu hỏi: <strong id="confirmQuizCount">0</strong> câu</p>
+                <p style="color: #4B5563; margin-bottom: 24px;">Thời gian: <strong id="confirmQuizTime">0</strong> phút</p>
+                
+                <div class="button-row center">
+                    <button id="btnCancelPreset" class="btn btn-light" style="width: 120px;">Từ chối</button>
+                    <button id="btnConfirmPreset" class="btn btn-dark" style="width: 120px;">Tham gia</button>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- 3. Tạo / chỉnh sửa quiz -->
     <section id="screen-editor" class="screen">
         <div class="page">
             <div class="topbar">
@@ -158,13 +175,12 @@
         </div>
     </section>
 
-    <!-- 4. Phòng chờ -->
     <section id="screen-waiting-room" class="screen">
         <div class="page small-page">
             <div class="card text-center">
                 <h2>Phòng chờ</h2>
                 <p>Mã phòng:</p>
-                <h1 id="roomCodeText">----</h1>
+                <h1 id="roomCodeText" style="color: var(--primary); font-size: 40px; letter-spacing: 2px;">----</h1>
 
                 <div id="playerList" class="player-list"></div>
 
@@ -176,7 +192,6 @@
         </div>
     </section>
 
-    <!-- 5. Tham gia phòng -->
     <section id="screen-join-room" class="screen">
         <div class="page small-page">
             <div class="card">
@@ -195,7 +210,6 @@
         </div>
     </section>
 
-    <!-- 6. Làm bài quiz -->
     <section id="screen-play-quiz" class="screen">
         <div class="page small-page">
             <div class="card">
@@ -205,7 +219,7 @@
                     <span id="scoreText">Điểm: 0</span>
                 </div>
 
-                <h2 id="playQuestionText">Câu hỏi</h2>
+                <h2 id="playQuestionText" style="margin-bottom: 20px;">Câu hỏi</h2>
 
                 <div id="optionBox" class="option-box"></div>
 
@@ -214,7 +228,6 @@
         </div>
     </section>
 
-    <!-- 7. Lịch sử quiz -->
     <section id="screen-history" class="screen">
         <div class="page">
             <div class="topbar">
@@ -240,7 +253,6 @@
         </div>
     </section>
 
-    <!-- 8. Kết quả + bảng xếp hạng -->
     <section id="screen-result" class="screen">
         <div class="page result-page">
             <div class="card text-center">

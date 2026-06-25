@@ -118,4 +118,14 @@ export const api = {
       email: email,
     });
   },
+  async getPresetQuizzes() {
+    try {
+      const response = await fetch("api/get_presets.php");
+      const text = await response.text();
+      return JSON.parse(text);
+    } catch (error) {
+      console.log("Lỗi tải preset:", error);
+      return { success: false, quizzes: [] };
+    }
+  },
 };
