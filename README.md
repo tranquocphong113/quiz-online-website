@@ -85,6 +85,7 @@ quiz-online-website/
 │   ├── db.php
 │   ├── quiz.php
 │   ├── room.php
+│   ├── get_presets.php
 │   └── score.php
 │
 ├── css/
@@ -101,10 +102,11 @@ quiz-online-website/
 │   └── result.js
 │   └── room.js
 │   └── ui.js
-│ 
+│
 ├── model/
 │   ├── api.js
 │   └── state.js
 │
 ├── index.php
 └── README.md
+```
